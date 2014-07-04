@@ -4,17 +4,21 @@
  * item removed is chosen uniformly at random. 
  * Execution: Needs unit tests.
  */
-//之前用Linked List实现的，但是在dequeue的时候会超时，所以用resizing queue重构了，随机存取是常数时间。
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class RandomizedQueue<Item> implements Iterable<Item> {
+public class RandomizedQueueLinked<Item> implements Iterable<Item> {
     private int N;
-    private Item[] arr;
+    private Node head;
+
+    private class Node {
+        private Item item;
+        private Node next;
+    }
 
     // construct an empty randomized queue
-    public RandomizedQueue() {
-        arr = (Item[]) new Object[2];
+    public RandomizedQueueLinked() {
+        head = null;
         N = 0;
     }
 
@@ -32,16 +36,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public void enqueue(Item item) {
         if (item == null)
             throw new NullPointerException();
-        if (N == arr.length)
-            resize(2 * arr.length);
-        arr[N++] = item;
-    }
-
-    private void resize(int n) {
-        Item[] aux = (Item[]) new Object[n];
-        for (int i = 0; i < N; i++)
-            aux[i] = arr[i];
-        arr = aux;
+        Node newNode = new Node();
+        newNode.item = item;
+        newNode.next = head;
+        head = newNode;
+        N++;
     }
 
     // delete and return a random item
@@ -49,15 +48,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (N == 0)
             throw new NoSuchElementException();
         int i = StdRandom.uniform(N);
-        Item item = arr[i];
-        //这里随机删去一个元素，再用最后一个填补进来，从而兼顾随机存取和数组的连续。
-        if (i < N - 1) {
-            arr[i] = arr[N - 1];
+        Node p = head;
+        Node pre = head;
+        if (i == 0) {
+            head = p.next;
         }
-        arr[N - 1] = null;
+        while (i > 0) {
+            pre = p;
+            p = p.next;
+            i--;
+        }
+        Item item = p.item;
+        pre.next = p.next;
+        p = null;
         N--;
-        if (N > 0 && N == arr.length / 4)
-            resize(arr.length / 2);
         return item;
     }
 
@@ -66,7 +70,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (N == 0)
             throw new NoSuchElementException();
         int i = StdRandom.uniform(N);
-        Item item = arr[i];
+        Node p = head;
+        while (i > 0) {
+            p = p.next;
+            i--;
+        }
+        Item item = p.item;
         return item;
     }
 
@@ -77,14 +86,17 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // implement Iterator
     private class RandomizedIterator implements Iterator<Item> {
-        private Item[] a;
+        private Item[] arr;
         private int t = 0;
 
         public RandomizedIterator() {
-            a = (Item[]) new Object[N];
-            for (int i = 0; i < N; i++)
-                a[i] = arr[i];
-            StdRandom.shuffle(a);
+            arr = (Item[]) new Object[N];
+            Node p = head;
+            for (int i = 0; i < N; i++) {
+                arr[i] = p.item;
+                p = p.next;
+            }
+            StdRandom.shuffle(arr);
         }
 
         public boolean hasNext() {
@@ -92,11 +104,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public Item next() {
-            if (!hasNext()) {
-                a = null;
+            if (!hasNext())
                 throw new NoSuchElementException();
-            }
-            return a[t++];
+            return arr[t++];
         }
 
         public void remove() {
