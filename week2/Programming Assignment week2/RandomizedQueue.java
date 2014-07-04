@@ -32,7 +32,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return N;
     }
 
-    // add the item???????????????????????????????????
+    // add the item
     public void enqueue(Item item) {
         if (item == null)
             throw new NullPointerException();
@@ -50,6 +50,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         int i = StdRandom.uniform(N);
         Node p = head;
         Node pre = head;
+        if (i == 0) {
+            head = p.next;
+        }
         while (i > 0) {
             pre = p;
             p = p.next;
