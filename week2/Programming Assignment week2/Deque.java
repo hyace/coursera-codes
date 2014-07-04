@@ -81,8 +81,8 @@ public class Deque<Item> implements Iterable<Item> {
     public Item removeLast() {
         if (N == 0)
             throw new NoSuchElementException("Queue underflow");
-        if (last-- < 0)
-            last = arr.length;
+        if (--last < 0)
+            last = arr.length - 1;
         Item item = arr[last];
         arr[last] = null;
         N--;
