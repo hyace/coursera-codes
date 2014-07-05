@@ -16,9 +16,9 @@ public class MergeBU {
             else if (j > h)
                 arr[k] = aux[i++];
             else if (less(aux[i], aux[j]))
-                arr[k] = aux[i];
+                arr[k] = aux[i++];
             else
-                arr[k] = aux[j];
+                arr[k] = aux[j++];
         }
     }
 
