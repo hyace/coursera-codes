@@ -21,17 +21,23 @@ public class Week3Test {
     }
 
     @Test
-    public void mergeTest() throws Exception {
-        // a = new Integer[] { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-        BufferedWriter bw = new BufferedWriter(new FileWriter("result.txt"));
+    public void geneTest() throws Exception {
+        Generator.init(1000000, false);
+    }
+
+    @Test
+    public void sortTest() throws Exception {
+        // a = new Integer[] { 9, 2, 7, 6, 5, 4, 3, 8, 1 };
+        // BufferedWriter bw = new BufferedWriter(new FileWriter("result.txt"));
         // Merge.sort(a);
         // MergePractical.sort(a);
-        MergeBU.sort(a);
+        // MergeBU.sort(a);
         // Insertion.sort(a);
-        for (int i = 0; i < a.length; i++) {
-            bw.write(a[i] + " ");
-        }
-        bw.close();
+        Quick.sort(a);
+        // for (int i = 0; i < a.length; i++) {
+        // bw.write(a[i] + " ");
+        // }
+        // bw.close();
         // for (int i = 0; i < a.length; i++) {
         // StdOut.print(a[i] + " ");
         // }
